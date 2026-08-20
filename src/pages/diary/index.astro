@@ -1,0 +1,153 @@
+---
+const title = "日记";
+const description = "记录日常生活、心情，以及一些想留下来的瞬间。";
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{title} — yourloaive</title>
+  </head>
+
+  <body>
+    <header>
+      <a href="/" class="logo">yourloaive</a>
+
+      <nav>
+        <a href="/diary/">日记</a>
+        <a href="/fandom/">追星</a>
+        <a href="/games/">游戏</a>
+        <a href="/travel/">旅行</a>
+        <a href="/books/">书籍</a>
+        <a href="/movies/">影视</a>
+      </nav>
+    </header>
+
+    <main>
+      <a href="/" class="back">← Back</a>
+
+      <p class="label">01 / DIARY</p>
+
+      <h1>{title}</h1>
+
+      <p class="description">{description}</p>
+
+      <section>
+        <p class="empty">这里以后会出现我的日记。</p>
+      </section>
+    </main>
+
+    <footer>© 2026 yourloaive</footer>
+  </body>
+</html>
+
+<style>
+  :global(*) {
+    box-sizing: border-box;
+  }
+
+  :global(body) {
+    margin: 0;
+    background: #f7f6f2;
+    color: #222;
+    font-family:
+      -apple-system,
+      BlinkMacSystemFont,
+      "Helvetica Neue",
+      "Hiragino Sans GB",
+      "PingFang SC",
+      sans-serif;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 5vw;
+  }
+
+  .logo {
+    color: #222;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  nav {
+    display: flex;
+    gap: 22px;
+  }
+
+  nav a {
+    color: #666;
+    text-decoration: none;
+    font-size: 13px;
+  }
+
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 80px 5vw 160px;
+  }
+
+  .back {
+    color: #888;
+    text-decoration: none;
+    font-size: 13px;
+  }
+
+  .label {
+    margin-top: 100px;
+    color: #999;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+  }
+
+  h1 {
+    margin: 20px 0;
+    font-size: clamp(60px, 10vw, 110px);
+    font-weight: 500;
+    letter-spacing: -0.05em;
+  }
+
+  .description {
+    color: #777;
+    line-height: 2;
+  }
+
+  section {
+    margin-top: 100px;
+    padding-top: 30px;
+    border-top: 1px solid #d8d6d0;
+  }
+
+  .empty {
+    color: #999;
+  }
+
+  footer {
+    padding: 30px 5vw;
+    border-top: 1px solid #d8d6d0;
+    color: #999;
+    font-size: 12px;
+  }
+
+  @media (max-width: 700px) {
+    header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+      padding: 24px;
+    }
+
+    nav {
+      flex-wrap: wrap;
+      gap: 12px 18px;
+    }
+
+    main {
+      padding: 50px 24px 100px;
+    }
+  }
+</style>
