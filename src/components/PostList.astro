@@ -1,22 +1,55 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import PageHeader from "../../components/PageHeader.astro";
-import PostList from "../../components/PostList.astro";
+import {
+  getCollection,
+  type CollectionEntry,
+} from "astro:content";
+
+interface Props {
+  category: "diary" |  "books" ;
+}
+
+const { category } = Astro.props;
+
+type Post = CollectionEntry<"posts">;
+
+const posts: Post[] = (await getCollection("posts"))
+  .filter((post: Post) => {
+    return post.data.category === category && !post.data.draft;
+  })
+  .sort((a: Post, b: Post) => {
+    return b.data.date.valueOf() - a.data.date.valueOf();
+  });
 ---
 
-<Layout
-  title="日记"
-  description="记录日常生活、心情，以及一些想留下来的瞬间。"
->
-  <PageHeader
-    number="01"
-    english="DIARY"
-    title="日记"
-    description="记录日常生活、心情，以及一些想留下来的瞬间。"
-  />
+<section class="posts">
+  {posts.length > 0 ? (
+    <div class="post-list">
+      {posts.map((post: Post) => (
+        <a class="post-item" href={`/${post.id}/`}>
+          <div class="post-date">
+            {post.data.date.toLocaleDateString("zh-CN", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+            })}
+          </div>
 
-  <PostList category="diary" />
-</Layout>
+          <div class="post-info">
+            <h2>{post.data.title}</h2>
+
+            {post.data.description && (
+              <p>{post.data.description}</p>
+            )}
+          </div>
+
+          <span class="arrow">→</span>
+        </a>
+      ))}
+    </div>
+  ) : (
+    <p class="empty">暂时还没有文章。</p>
+  )}
+</section>
 
 <style>
   .posts {

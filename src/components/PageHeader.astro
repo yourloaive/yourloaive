@@ -1,0 +1,47 @@
+---
+interface Props {
+  number: string;
+  english: string;
+  title: string;
+  description: string;
+}
+
+const { number, english, title, description } = Astro.props;
+---
+
+<section class="page-header">
+  <p class="label">{number} / {english}</p>
+
+  <h1>{title}</h1>
+
+  <p class="description">{description}</p>
+</section>
+
+<style>
+  .page-header {
+    padding: 100px 0 80px;
+  }
+
+  .label {
+    margin: 0 0 24px;
+
+    color: #999;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+  }
+
+  h1 {
+    margin: 0;
+
+    font-size: clamp(60px, 10vw, 110px);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+  }
+
+  .description {
+    margin-top: 35px;
+
+    color: #777;
+    line-height: 2;
+  }
+</style>

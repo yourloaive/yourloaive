@@ -1,45 +1,27 @@
 ---
-const title = "书籍";
-const description = "记录读过的书、喜欢的句子，以及阅读时留下来的想法。";
+import Layout from "../../layouts/Layout.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import PostList from "../../components/PostList.astro";
 ---
 
-<html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>{title} — yourloaive</title>
-  </head>
+<Layout
+  title="书籍"
+  description="记录读过的书、喜欢的句子，以及阅读时留下来的想法。"
+>
+  <PageHeader
+    number="02"
+    english="BOOKS"
+    title="书籍"
+    description="记录读过的书、喜欢的句子，以及阅读时留下来的想法。"
+  />
 
-  <body>
-    <header><a href="/">yourloaive</a></header>
-
-    <main>
-      <a href="/">← Back</a>
-      <p>05 / BOOKS</p>
-      <h1>{title}</h1>
-      <p>{description}</p>
-      <hr />
-      <p>这里以后会放我的阅读记录。</p>
-    </main>
-  </body>
-</html>
+  <PostList category="books" />
+</Layout>
 
 <style>
-  body {
-    margin: 0;
-    padding: 40px;
-    background: #f7f6f2;
-    color: #222;
-    font-family: sans-serif;
-  }
-
-  main {
-    max-width: 800px;
-    margin: 100px auto;
-  }
-
-  h1 {
-    font-size: 80px;
-    font-weight: 500;
+  .posts {
+    padding: 40px 0 160px;
+    border-top: 1px solid #d8d6d0;
+    color: #999;
   }
 </style>
