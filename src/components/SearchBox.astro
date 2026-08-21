@@ -1,0 +1,363 @@
+---
+import {
+  getCollection,
+  type CollectionEntry,
+} from "astro:content";
+
+interface Props {
+  category: "diary" | "books";
+  placeholder?: string;
+}
+
+const { category, placeholder = "搜索文章……" } = Astro.props;
+
+type Post = CollectionEntry<"posts">;
+
+const allPosts = await getCollection("posts");
+
+const posts = allPosts
+  .filter((post: Post) => {
+    return (
+      post.data.category === category &&
+      !post.data.draft
+    );
+  })
+  .map((post: Post) => ({
+    id: post.id,
+    title: post.data.title,
+    description: post.data.description ?? "",
+    author: post.data.author ?? "",
+    tags: post.data.tags ?? [],
+    body: post.body ?? "",
+    date: post.data.date.toISOString(),
+  }));
+---
+
+<div
+  class="search-box"
+  data-category={category}
+>
+  <div class="search-input-wrapper">
+    <span class="search-icon">⌕</span>
+
+    <input
+      type="search"
+      class="search-input"
+      placeholder={placeholder}
+      autocomplete="off"
+      aria-label={placeholder}
+    />
+
+    <button
+      type="button"
+      class="search-clear"
+      aria-label="清除搜索"
+    >
+      ×
+    </button>
+  </div>
+
+  <div class="search-status"></div>
+
+  <div class="search-results"></div>
+</div>
+
+<script define:vars={{ posts }}>
+  const searchBoxes =
+    document.querySelectorAll(".search-box");
+
+  searchBoxes.forEach((box) => {
+    const input =
+      box.querySelector(".search-input");
+
+    const clearButton =
+      box.querySelector(".search-clear");
+
+    const results =
+      box.querySelector(".search-results");
+
+    const status =
+      box.querySelector(".search-status");
+
+    if (
+      !(input instanceof HTMLInputElement) ||
+      !(clearButton instanceof HTMLButtonElement) ||
+      !(results instanceof HTMLElement) ||
+      !(status instanceof HTMLElement)
+    ) {
+      return;
+    }
+
+    const defaultContent =
+      document.querySelector(".default-content");
+
+    const normalize = (text) => {
+      return text
+        .toLowerCase()
+        .replace(/\s+/g, "");
+    };
+
+    const search = () => {
+      const keyword =
+        normalize(input.value);
+
+      results.innerHTML = "";
+
+      /*
+       * 没有关键词
+       * ↓
+       * 恢复正常文章列表
+       */
+      if (!keyword) {
+        clearButton.style.display = "none";
+
+        status.textContent = "";
+
+        if (defaultContent) {
+          defaultContent.style.display = "";
+        }
+
+        return;
+      }
+
+      /*
+       * 正在搜索
+       * ↓
+       * 隐藏正常文章列表
+       */
+      clearButton.style.display = "block";
+
+      if (defaultContent) {
+        defaultContent.style.display = "none";
+      }
+
+      /*
+       * 开始匹配
+       */
+     const matchedPosts = posts.filter((post) => {
+  const searchableText =
+    normalize(
+      [
+        post.title,
+        post.description,
+        post.author,
+        ...post.tags,
+        post.body,
+      ].join(" ")
+    );
+
+  return searchableText.includes(keyword);
+});
+
+      /*
+       * 显示搜索结果数量
+       */
+      if (matchedPosts.length > 0) {
+        status.textContent =
+          `找到 ${matchedPosts.length} 篇内容`;
+      } else {
+        status.textContent =
+          "没有找到相关内容";
+      }
+
+      /*
+       * 显示搜索结果
+       */
+      matchedPosts.forEach((post) => {
+        const link =
+          document.createElement("a");
+
+        link.href =
+          `/${post.id}/`;
+
+        link.className =
+          "search-result";
+
+        const title =
+          document.createElement("h3");
+
+        title.textContent =
+          post.title;
+
+        const meta =
+          document.createElement("p");
+
+        if (post.author) {
+          meta.textContent =
+            post.author;
+        } else {
+          meta.textContent =
+            new Date(
+              post.date
+            ).toLocaleDateString(
+              "zh-CN"
+            );
+        }
+
+        const description =
+          document.createElement("p");
+
+        description.className =
+          "search-description";
+
+        description.textContent =
+          post.description;
+
+        link.appendChild(title);
+
+        link.appendChild(meta);
+
+        if (post.description) {
+          link.appendChild(
+            description
+          );
+        }
+
+        results.appendChild(link);
+      });
+    };
+
+    /*
+     * 输入文字时搜索
+     */
+    input.addEventListener(
+      "input",
+      search
+    );
+
+    /*
+     * 点击 ×
+     */
+    clearButton.addEventListener(
+      "click",
+      () => {
+        input.value = "";
+
+        search();
+
+        input.focus();
+      }
+    );
+  });
+</script>
+
+<style>
+  .search-box {
+    margin: 20px 0 50px;
+  }
+
+  .search-input-wrapper {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    border-bottom: 1px solid #d8d6d0;
+  }
+
+  .search-icon {
+    color: #999;
+
+    font-size: 20px;
+
+    transform: rotate(-20deg);
+  }
+
+  .search-input {
+    flex: 1;
+
+    width: 100%;
+
+    padding: 15px 40px 15px 12px;
+
+    border: 0;
+    outline: 0;
+
+    background: transparent;
+
+    color: #222;
+
+    font-family: inherit;
+    font-size: 14px;
+  }
+
+  .search-input::placeholder {
+    color: #aaa;
+  }
+
+  .search-clear {
+    position: absolute;
+    right: 5px;
+
+    display: none;
+
+    border: 0;
+    background: transparent;
+
+    color: #999;
+
+    font-size: 20px;
+
+    cursor: pointer;
+  }
+
+  .search-clear:hover {
+    color: #222;
+  }
+
+  .search-status {
+    margin-top: 15px;
+
+    color: #999;
+
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+
+  .search-results {
+    margin-top: 20px;
+  }
+
+  .search-result {
+    display: block;
+
+    padding: 22px 0;
+
+    border-bottom: 1px solid #d8d6d0;
+
+    color: inherit;
+    text-decoration: none;
+
+    transition:
+      padding 0.25s ease,
+      color 0.25s ease;
+  }
+
+  .search-result:hover {
+    padding-left: 8px;
+    color: #777;
+  }
+
+  .search-result h3 {
+    margin: 0;
+
+    font-size: 18px;
+    font-weight: 400;
+  }
+
+  .search-result p {
+    margin: 7px 0 0;
+
+    color: #999;
+
+    font-size: 11px;
+  }
+
+  .search-result .search-description {
+    max-width: 600px;
+
+    line-height: 1.8;
+
+    font-size: 12px;
+  }
+</style>

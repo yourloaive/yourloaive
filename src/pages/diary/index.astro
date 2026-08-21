@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import PageHeader from "../../components/PageHeader.astro";
 import PostList from "../../components/PostList.astro";
+import SearchBox from "../../components/SearchBox.astro";
 ---
 
 <Layout
@@ -9,13 +10,20 @@ import PostList from "../../components/PostList.astro";
   description="记录日常生活、心情，以及一些想留下来的瞬间。"
 >
   <PageHeader
-    number="01"
-    english="DIARY"
-    title="日记"
-    description="记录日常生活、心情，以及一些想留下来的瞬间。"
-  />
+  number="01"
+  english="DIARY"
+  title="日记"
+  description="记录日常生活、心情，以及一些想留下来的瞬间。"
+/>
 
+<SearchBox
+  category="diary"
+  placeholder="搜索日记……"
+/>
+
+<div class="default-content">
   <PostList category="diary" />
+</div>
 </Layout>
 
 <style>
