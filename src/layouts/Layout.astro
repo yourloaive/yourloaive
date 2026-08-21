@@ -26,15 +26,27 @@ const categories = [
     <meta name="description" content={description} />
   </head>
 
-  <body>
+<body>
+  <img
+    class="background-image"
+    src="/images/IMG_2049.JPG"
+    alt=""
+  />
+
+  <div class="site-content">
     <header class="header">
       <a href="/" class="logo">yourloaive</a>
 
       <nav>
         {categories.map((category) => (
           <a href={category.path}>
-            <span class="nav-chinese">{category.name}</span>
-            <span class="nav-english">{category.english}</span>
+            <span class="nav-chinese">
+              {category.name}
+            </span>
+
+            <span class="nav-english">
+              {category.english}
+            </span>
           </a>
         ))}
       </nav>
@@ -47,7 +59,8 @@ const categories = [
     <footer>
       <p>© 2026 yourloaive</p>
     </footer>
-  </body>
+  </div>
+</body>
 </html>
 
 <style>
@@ -191,4 +204,39 @@ const categories = [
       padding: 25px 24px;
     }
   }
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  position: relative;
+  background: #f8f7f3;
+}
+
+.background-image {
+  position: absolute;
+
+  top: 0;
+  left: 50%;
+
+  width: 100%;
+  height: auto;
+
+  transform: translateX(-50%);
+
+  display: block;
+
+  z-index: 0;
+
+  opacity: 0.3;
+
+  pointer-events: none;
+}
+
+.site-content {
+  position: relative;
+  z-index: 1;
+}
 </style>
