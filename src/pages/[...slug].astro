@@ -17,9 +17,9 @@ export async function getStaticPaths(): Promise<
 > {
   const posts = await getCollection("posts");
 
- return posts
-  .filter((post: Post) => !post.data.draft)
-  .map((post: Post) => ({
+  return posts
+    .filter((post: Post) => !post.data.draft)
+    .map((post: Post) => ({
       params: {
         slug: post.id,
       },
@@ -40,7 +40,7 @@ const { Content } = await render(post);
   title={post.data.title}
   description={post.data.description ?? ""}
 >
-  <main class="post">
+<main class:list={["post", { "book-post": post.data.category === "books" }]}>
     <p class="category">
       {post.data.category}
     </p>
@@ -59,9 +59,51 @@ const { Content } = await render(post);
 
     <hr />
 
-    <article class="content">
+    {post.data.category === "books" ? (
+  <div class="book-tabs">
+    <div class="tab-buttons">
+      <button
+        type="button"
+        class="tab-button active"
+        data-tab="quotes"
+      >
+        摘抄
+      </button>
+
+      <button
+        type="button"
+        class="tab-button"
+        data-tab="review"
+      >
+        读后感
+      </button>
+    </div>
+
+    <article class="content book-content">
       <Content />
     </article>
+  </div>
+) : (
+  <article class="content">
+    <Content />
+  </article>
+)}
+
+    <div class="image-lightbox" aria-hidden="true">
+      <button
+        class="lightbox-close"
+        aria-label="关闭图片"
+        type="button"
+      >
+        ×
+      </button>
+
+      <img
+        class="lightbox-image"
+        src=""
+        alt=""
+      />
+    </div>
 
     {post.data.tags && post.data.tags.length > 0 && (
       <div class="tags">
@@ -140,9 +182,19 @@ const { Content } = await render(post);
 
   .content :global(img) {
     display: block;
+
     width: 100%;
     height: auto;
-    margin: 40px 0;
+
+    margin: 50px 0;
+
+    cursor: zoom-in;
+
+    transition: opacity 0.25s ease;
+  }
+
+  .content :global(img:hover) {
+    opacity: 0.92;
   }
 
   .content :global(a) {
@@ -178,6 +230,78 @@ const { Content } = await render(post);
     font-size: 12px;
   }
 
+  .image-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 40px;
+
+    background: rgba(20, 20, 20, 0.88);
+
+    opacity: 0;
+    visibility: hidden;
+
+    cursor: zoom-out;
+
+    transition:
+      opacity 0.25s ease,
+      visibility 0.25s ease;
+  }
+
+  .image-lightbox.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .lightbox-image {
+    max-width: 92vw;
+    max-height: 90vh;
+
+    width: auto;
+    height: auto;
+
+    object-fit: contain;
+
+    box-shadow: 0 20px 80px rgba(0, 0, 0, 0.25);
+
+    cursor: default;
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: 25px;
+    right: 30px;
+
+    width: 40px;
+    height: 40px;
+
+    border: 0;
+    background: transparent;
+
+    color: white;
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 32px;
+    font-weight: 200;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    opacity: 0.7;
+
+    transition: opacity 0.2s ease;
+  }
+
+  .lightbox-close:hover {
+    opacity: 1;
+  }
+
   @media (max-width: 700px) {
     .post {
       padding: 60px 0 100px;
@@ -186,5 +310,223 @@ const { Content } = await render(post);
     .content {
       font-size: 15px;
     }
+
+    .image-lightbox {
+      padding: 20px;
+    }
+
+    .lightbox-image {
+      max-width: 96vw;
+      max-height: 85vh;
+    }
+
+    .lightbox-close {
+      top: 15px;
+      right: 15px;
+    }
   }
+  .book-tabs {
+  margin-top: 20px;
+}
+
+.tab-buttons {
+  display: flex;
+
+  border-bottom: 1px solid #d8d6d0;
+
+  margin-bottom: 50px;
+}
+
+.tab-button {
+  position: relative;
+
+  padding: 14px 28px;
+
+  border: 0;
+  background: transparent;
+
+  color: #aaa;
+
+  font-family: inherit;
+  font-size: 13px;
+
+  cursor: pointer;
+
+  transition: color 0.25s ease;
+}
+
+.tab-button:hover {
+  color: #555;
+}
+
+.tab-button.active {
+  color: #222;
+}
+
+.tab-button.active::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: -1px;
+
+  height: 1px;
+
+  background: #222;
+}
+
+.book-content > :global(h2) {
+  display: none;
+}
+
+.book-content > :global(h2.active-section) {
+  display: block;
+}
+.book-panel {
+  animation: bookPanelFade 0.25s ease;
+}
+
+@keyframes bookPanelFade {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 </style>
+
+<script>
+  const images = document.querySelectorAll(".content img");
+  const lightbox = document.querySelector(".image-lightbox");
+  const lightboxImage = document.querySelector(".lightbox-image");
+  const closeButton = document.querySelector(".lightbox-close");
+
+  if (
+    lightbox instanceof HTMLElement &&
+    lightboxImage instanceof HTMLImageElement &&
+    closeButton instanceof HTMLButtonElement
+  ) {
+    images.forEach((image) => {
+      image.addEventListener("click", () => {
+        if (!(image instanceof HTMLImageElement)) return;
+
+        lightboxImage.src = image.src;
+        lightboxImage.alt = image.alt;
+
+        lightbox.classList.add("active");
+        lightbox.setAttribute("aria-hidden", "false");
+
+        document.body.style.overflow = "hidden";
+      });
+    });
+
+    const closeLightbox = () => {
+      lightbox.classList.remove("active");
+      lightbox.setAttribute("aria-hidden", "true");
+
+      document.body.style.overflow = "";
+
+      setTimeout(() => {
+        lightboxImage.src = "";
+      }, 250);
+    };
+
+    closeButton.addEventListener("click", closeLightbox);
+
+    lightbox.addEventListener("click", (event) => {
+      if (event.target === lightbox) {
+        closeLightbox();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeLightbox();
+      }
+    });
+  }
+const bookPost = document.querySelector<HTMLElement>(".book-post");
+
+if (bookPost) {
+  const content =
+    bookPost.querySelector<HTMLElement>(".book-content");
+
+  const buttons =
+    bookPost.querySelectorAll<HTMLButtonElement>(".tab-button");
+
+  if (content) {
+    const panels: Record<
+      "quotes" | "review",
+      HTMLDivElement
+    > = {
+      quotes: document.createElement("div"),
+      review: document.createElement("div"),
+    };
+
+    panels.quotes.className = "book-panel";
+    panels.review.className = "book-panel";
+
+    let currentPanel: HTMLDivElement | null = null;
+
+    Array.from(content.children).forEach((element) => {
+      if (element instanceof HTMLHeadingElement) {
+        const text = element.textContent?.trim();
+
+        if (text === "摘抄") {
+          currentPanel = panels.quotes;
+        } else if (text === "读后感") {
+          currentPanel = panels.review;
+        } else {
+          currentPanel = null;
+        }
+
+        return;
+      }
+
+      if (currentPanel) {
+        currentPanel.appendChild(element);
+      }
+    });
+
+    content.innerHTML = "";
+
+    content.appendChild(panels.quotes);
+    content.appendChild(panels.review);
+
+    const showPanel = (
+      name: "quotes" | "review"
+    ) => {
+      panels.quotes.style.display =
+        name === "quotes" ? "block" : "none";
+
+      panels.review.style.display =
+        name === "review" ? "block" : "none";
+
+      buttons.forEach((button) => {
+        button.classList.toggle(
+          "active",
+          button.dataset.tab === name
+        );
+      });
+    };
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const tab = button.dataset.tab;
+
+        if (tab === "quotes" || tab === "review") {
+          showPanel(tab);
+        }
+      });
+    });
+
+    showPanel("quotes");
+  }
+}
+</script>

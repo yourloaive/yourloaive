@@ -1,7 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import PageHeader from "../../components/PageHeader.astro";
-import PostList from "../../components/PostList.astro";
+import BookGrid from "../../components/BookGrid.astro";
 ---
 
 <Layout
@@ -9,13 +9,13 @@ import PostList from "../../components/PostList.astro";
   description="记录读过的书、喜欢的句子，以及阅读时留下来的想法。"
 >
   <PageHeader
-    number="02"
+    number="05"
     english="BOOKS"
     title="书籍"
     description="记录读过的书、喜欢的句子，以及阅读时留下来的想法。"
   />
 
-  <PostList category="books" />
+  <BookGrid />
 </Layout>
 
 <style>

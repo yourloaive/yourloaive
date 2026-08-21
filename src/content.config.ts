@@ -16,6 +16,8 @@ const posts = defineCollection({
       "diary",
       "books",
     ]),
+    author: z.string().optional(),
+    cover: z.string().optional(),
     tags: z.array(z.string()).optional(),
     draft: z.boolean().default(false),
   }),

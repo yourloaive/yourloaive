@@ -1,0 +1,165 @@
+---
+import {
+  getCollection,
+  type CollectionEntry,
+} from "astro:content";
+
+type Book = CollectionEntry<"posts">;
+
+const books: Book[] = (await getCollection("posts"))
+  .filter((post: Book) => {
+    return post.data.category === "books" && !post.data.draft;
+  })
+  .filter((post: Book) => {
+    return Boolean(post.data.cover);
+  })
+  .sort((a: Book, b: Book) => {
+    return b.data.date.valueOf() - a.data.date.valueOf();
+  });
+---
+
+<section class="book-grid">
+  {books.map((book: Book) => (
+    <a
+      href={`/${book.id}/`}
+      class="book"
+      aria-label={`查看《${book.data.title}》`}
+    >
+      <img
+        src={book.data.cover}
+        alt={book.data.title}
+      />
+
+      <div class="book-overlay">
+        <div class="book-info">
+          <h2>{book.data.title}</h2>
+
+          {book.data.author && (
+            <p>{book.data.author}</p>
+          )}
+        </div>
+      </div>
+    </a>
+  ))}
+</section>
+
+<style>
+  .book-grid {
+    display: grid;
+
+    grid-template-columns: repeat(5, 1fr);
+
+    gap: 18px;
+
+    padding: 20px 0 150px;
+  }
+
+  .book {
+    position: relative;
+
+    display: block;
+
+    aspect-ratio: 2 / 3;
+
+    overflow: hidden;
+
+    background: #e8e6df;
+
+    text-decoration: none;
+  }
+
+  .book img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition:
+      transform 0.5s ease,
+      filter 0.5s ease;
+  }
+
+  .book-overlay {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    align-items: flex-end;
+
+    padding: 25px;
+
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.75),
+      rgba(0, 0, 0, 0.15) 60%,
+      transparent
+    );
+
+    opacity: 0;
+
+    transition: opacity 0.35s ease;
+  }
+
+  .book-info {
+    color: white;
+
+    transform: translateY(10px);
+
+    transition: transform 0.35s ease;
+  }
+
+  .book-info h2 {
+    margin: 0;
+
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
+  .book-info p {
+    margin: 6px 0 0;
+
+    font-size: 12px;
+    opacity: 0.75;
+  }
+
+  .book:hover img {
+    transform: scale(1.04);
+  }
+
+  .book:hover .book-overlay {
+    opacity: 1;
+  }
+
+  .book:hover .book-info {
+    transform: translateY(0);
+  }
+
+  @media (max-width: 900px) {
+    .book-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .book-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .book-overlay {
+      padding: 15px;
+    }
+
+    .book-info h2 {
+      font-size: 14px;
+    }
+
+    .book-info p {
+      font-size: 10px;
+    }
+  }
+</style>
