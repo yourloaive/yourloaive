@@ -26,41 +26,87 @@ const categories = [
     <meta name="description" content={description} />
   </head>
 
-<body>
-  <img
-    class="background-image"
-    src="/images/IMG_2049.JPG"
-    alt=""
-  />
+  <body>
 
-  <div class="site-content">
-    <header class="header">
-      <a href="/" class="logo">yourloaive</a>
+    <!-- 背景图片 -->
+    <div class="background-wrapper">
+      <img
+        class="background-image"
+        src="/images/IMG_2049.JPG"
+        alt=""
+      />
+    </div>
 
-      <nav>
-        {categories.map((category) => (
-          <a href={category.path}>
-            <span class="nav-chinese">
-              {category.name}
-            </span>
+    <!-- 网站内容 -->
+    <div class="site-content">
 
-            <span class="nav-english">
-              {category.english}
-            </span>
-          </a>
-        ))}
-      </nav>
-    </header>
+      <header class="header">
+        <a href="/" class="logo">yourloaive</a>
 
-    <main>
-      <slot />
-    </main>
+        <nav>
+          {categories.map((category) => (
+            <a href={category.path}>
+              <span class="nav-chinese">
+                {category.name}
+              </span>
 
-    <footer>
-      <p>© 2026 yourloaive</p>
-    </footer>
-  </div>
-</body>
+              <span class="nav-english">
+                {category.english}
+              </span>
+            </a>
+          ))}
+        </nav>
+      </header>
+
+      <main>
+        <slot />
+      </main>
+
+      <footer>
+        <p>© 2026 yourloaive</p>
+      </footer>
+
+    </div>
+
+    <!-- 背景滚动控制 -->
+    <script>
+      const background = document.querySelector(
+        ".background-wrapper"
+      );
+
+      if (background instanceof HTMLElement) {
+        const updateBackground = () => {
+          const scrollY = window.scrollY;
+
+          const viewportHeight = window.innerHeight;
+
+          const imageHeight = background.scrollHeight;
+
+          const maxScroll =
+            Math.max(0, imageHeight - viewportHeight);
+
+          const position = Math.min(scrollY, maxScroll);
+
+          background.style.transform =
+            `translateY(-${position}px)`;
+        };
+
+        window.addEventListener(
+          "scroll",
+          updateBackground,
+          { passive: true }
+        );
+
+        window.addEventListener(
+          "resize",
+          updateBackground
+        );
+
+        updateBackground();
+      }
+    </script>
+
+  </body>
 </html>
 
 <style>
@@ -76,7 +122,7 @@ const categories = [
   }
 
   :global(body) {
-    background: #f7f6f2;
+    background: #f8f7f3;
     color: #222;
 
     font-family:
@@ -86,6 +132,43 @@ const categories = [
       "Hiragino Sans GB",
       "PingFang SC",
       sans-serif;
+  }
+
+  /* =========================
+     背景图片
+     ========================= */
+
+  .background-wrapper {
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+
+    z-index: 0;
+
+    pointer-events: none;
+
+    overflow: hidden;
+  }
+
+  .background-image {
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    opacity: 0.3;
+  }
+
+  /* =========================
+     网站内容
+     ========================= */
+
+  .site-content {
+    position: relative;
+    z-index: 1;
   }
 
   .header {
@@ -102,12 +185,14 @@ const categories = [
 
     font-size: 20px;
     font-weight: 600;
+
     letter-spacing: -0.02em;
   }
 
   nav {
     display: flex;
     align-items: flex-start;
+
     gap: 30px;
   }
 
@@ -115,6 +200,7 @@ const categories = [
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+
     gap: 4px;
 
     color: #333;
@@ -128,7 +214,9 @@ const categories = [
   .nav-chinese {
     font-size: 14px;
     font-weight: 400;
+
     line-height: 1.2;
+
     white-space: nowrap;
   }
 
@@ -136,11 +224,14 @@ const categories = [
     color: #aaa;
 
     font-family: Arial, Helvetica, sans-serif;
+
     font-size: 8px;
     font-weight: 400;
+
     line-height: 1;
 
     letter-spacing: 0.14em;
+
     text-transform: uppercase;
 
     white-space: nowrap;
@@ -148,6 +239,7 @@ const categories = [
 
   nav a:hover {
     color: #888;
+
     transform: translateY(-2px);
   }
 
@@ -157,7 +249,9 @@ const categories = [
 
   main {
     max-width: 1100px;
+
     margin: 0 auto;
+
     padding: 0 5vw;
   }
 
@@ -167,13 +261,20 @@ const categories = [
     border-top: 1px solid #d8d6d0;
 
     color: #999;
+
     font-size: 12px;
   }
+
+  /* =========================
+     手机端
+     ========================= */
 
   @media (max-width: 700px) {
     .header {
       flex-direction: column;
+
       align-items: flex-start;
+
       gap: 24px;
 
       padding: 24px;
@@ -183,6 +284,7 @@ const categories = [
       width: 100%;
 
       display: grid;
+
       grid-template-columns: repeat(3, 1fr);
 
       gap: 18px 12px;
@@ -204,39 +306,4 @@ const categories = [
       padding: 25px 24px;
     }
   }
-html,
-body {
-  margin: 0;
-  min-height: 100%;
-}
-
-body {
-  position: relative;
-  background: #f8f7f3;
-}
-
-.background-image {
-  position: absolute;
-
-  top: 0;
-  left: 50%;
-
-  width: 100%;
-  height: auto;
-
-  transform: translateX(-50%);
-
-  display: block;
-
-  z-index: 0;
-
-  opacity: 0.3;
-
-  pointer-events: none;
-}
-
-.site-content {
-  position: relative;
-  z-index: 1;
-}
 </style>
