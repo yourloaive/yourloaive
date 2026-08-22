@@ -14,21 +14,42 @@ const categories = [
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
 
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1"
+    />
 
-    <meta name="generator" content={Astro.generator} />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="/favicon.svg"
+    />
+
+    <link
+      rel="icon"
+      href="/favicon.ico"
+    />
+
+    <meta
+      name="generator"
+      content={Astro.generator}
+    />
 
     <title>{title} — yourloaive</title>
 
-    <meta name="description" content={description} />
+    <meta
+      name="description"
+      content={description}
+    />
   </head>
 
   <body>
 
-    <!-- 背景图片 -->
+    <!-- =========================
+         全网站背景图片
+         ========================= -->
+
     <div class="background-wrapper">
       <img
         class="background-image"
@@ -37,15 +58,31 @@ const categories = [
       />
     </div>
 
-    <!-- 网站内容 -->
+
+    <!-- =========================
+         网站主要内容
+         ========================= -->
+
     <div class="site-content">
 
+      <!-- 顶部导航 -->
+
       <header class="header">
-        <a href="/" class="logo">yourloaive</a>
+
+        <a
+          href="/"
+          class="logo"
+        >
+          yourloaive
+        </a>
+
 
         <nav>
+
           {categories.map((category) => (
+
             <a href={category.path}>
+
               <span class="nav-chinese">
                 {category.name}
               </span>
@@ -53,14 +90,24 @@ const categories = [
               <span class="nav-english">
                 {category.english}
               </span>
+
             </a>
+
           ))}
+
         </nav>
+
       </header>
+
+
+      <!-- 页面内容 -->
 
       <main>
         <slot />
       </main>
+
+
+      <!-- Footer -->
 
       <footer>
         <p>© 2026 yourloaive</p>
@@ -68,61 +115,35 @@ const categories = [
 
     </div>
 
-    <!-- 背景滚动控制 -->
-    <script>
-      const background = document.querySelector(
-        ".background-wrapper"
-      );
-
-      if (background instanceof HTMLElement) {
-        const updateBackground = () => {
-          const scrollY = window.scrollY;
-
-          const viewportHeight = window.innerHeight;
-
-          const imageHeight = background.scrollHeight;
-
-          const maxScroll =
-            Math.max(0, imageHeight - viewportHeight);
-
-          const position = Math.min(scrollY, maxScroll);
-
-          background.style.transform =
-            `translateY(-${position}px)`;
-        };
-
-        window.addEventListener(
-          "scroll",
-          updateBackground,
-          { passive: true }
-        );
-
-        window.addEventListener(
-          "resize",
-          updateBackground
-        );
-
-        updateBackground();
-      }
-    </script>
-
   </body>
 </html>
 
+
 <style>
+
+  /* ========================================
+     基础设置
+     ======================================== */
+
   :global(*) {
     box-sizing: border-box;
   }
 
+
   :global(html),
   :global(body) {
     margin: 0;
+
     width: 100%;
+
     min-height: 100%;
   }
 
+
   :global(body) {
+
     background: #f8f7f3;
+
     color: #222;
 
     font-family:
@@ -134,76 +155,117 @@ const categories = [
       sans-serif;
   }
 
-  /* =========================
-     背景图片
-     ========================= */
+
+
+  /* ========================================
+     全局背景
+     ======================================== */
 
   .background-wrapper {
-    position: absolute;
+
+    position: fixed;
 
     top: 0;
     left: 0;
 
     width: 100%;
+    height: 100vh;
 
     z-index: 0;
 
-    pointer-events: none;
-
     overflow: hidden;
+
+    pointer-events: none;
   }
 
+
   .background-image {
+
     display: block;
 
     width: 100%;
     height: auto;
 
-    opacity: 0.3;
+    opacity: 0.30;
   }
 
-  /* =========================
+
+
+  /* ========================================
      网站内容
-     ========================= */
+     ======================================== */
 
   .site-content {
+
     position: relative;
+
     z-index: 1;
   }
 
+
+
+  /* ========================================
+     Header
+     ======================================== */
+
   .header {
+
     display: flex;
+
     justify-content: space-between;
+
     align-items: flex-start;
 
     padding: 32px 5vw;
   }
 
+
+
+  /* ========================================
+     Logo
+     ======================================== */
+
   .logo {
+
     color: #222;
+
     text-decoration: none;
 
     font-size: 20px;
+
     font-weight: 600;
 
     letter-spacing: -0.02em;
   }
 
+
+
+  /* ========================================
+     Navigation
+     ======================================== */
+
   nav {
+
     display: flex;
+
     align-items: flex-start;
 
     gap: 30px;
   }
 
+
   nav a {
+
     display: flex;
+
     flex-direction: column;
+
     align-items: flex-start;
 
     gap: 4px;
 
     color: #333;
+
     text-decoration: none;
 
     transition:
@@ -211,8 +273,11 @@ const categories = [
       transform 0.25s ease;
   }
 
+
   .nav-chinese {
+
     font-size: 14px;
+
     font-weight: 400;
 
     line-height: 1.2;
@@ -220,12 +285,18 @@ const categories = [
     white-space: nowrap;
   }
 
+
   .nav-english {
+
     color: #aaa;
 
-    font-family: Arial, Helvetica, sans-serif;
+    font-family:
+      Arial,
+      Helvetica,
+      sans-serif;
 
     font-size: 8px;
+
     font-weight: 400;
 
     line-height: 1;
@@ -237,17 +308,28 @@ const categories = [
     white-space: nowrap;
   }
 
+
   nav a:hover {
+
     color: #888;
 
     transform: translateY(-2px);
   }
 
+
   nav a:hover .nav-english {
+
     color: #888;
   }
 
+
+
+  /* ========================================
+     Main
+     ======================================== */
+
   main {
+
     max-width: 1100px;
 
     margin: 0 auto;
@@ -255,22 +337,70 @@ const categories = [
     padding: 0 5vw;
   }
 
+
+
+  /* ========================================
+     Footer
+     ======================================== */
+
   footer {
+
     padding: 30px 5vw;
 
-    border-top: 1px solid #d8d6d0;
+    border-top:
+      1px solid #d8d6d0;
 
     color: #999;
 
     font-size: 12px;
   }
 
-  /* =========================
+
+
+  /* ========================================
      手机端
-     ========================= */
+     ======================================== */
 
   @media (max-width: 700px) {
+
+
+    /* ----------------------------------------
+       手机端背景
+       ---------------------------------------- */
+
+    .background-wrapper {
+
+      position: fixed;
+
+      top: 0;
+      left: 0;
+
+      width: 100%;
+      height: 100vh;
+
+      overflow: hidden;
+
+      z-index: 0;
+    }
+
+
+    .background-image {
+
+      width: 100%;
+
+      height: auto;
+
+      opacity: 0.25;
+    }
+
+
+
+    /* ----------------------------------------
+       手机端 Header
+       ---------------------------------------- */
+
     .header {
+
       flex-direction: column;
 
       align-items: flex-start;
@@ -280,30 +410,132 @@ const categories = [
       padding: 24px;
     }
 
+
+
+    /* ----------------------------------------
+       手机端导航
+       ---------------------------------------- */
+
     nav {
+
       width: 100%;
 
       display: grid;
 
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns:
+        repeat(2, 1fr);
 
       gap: 18px 12px;
     }
 
+
     .nav-chinese {
+
       font-size: 13px;
     }
 
+
     .nav-english {
+
       font-size: 7px;
     }
 
+
+
+    /* ----------------------------------------
+       手机端 Main
+       ---------------------------------------- */
+
     main {
+
       padding: 0 24px;
     }
 
+
+
+    /* ----------------------------------------
+       手机端首页 Hero
+       ---------------------------------------- */
+
+    :global(.hero) {
+
+      min-height: 480px !important;
+
+      padding:
+        70px 0 80px !important;
+
+      justify-content: center;
+    }
+
+
+    :global(h1) {
+
+      font-size:
+        clamp(
+          46px,
+          13vw,
+          72px
+        ) !important;
+
+      line-height: 1 !important;
+    }
+
+
+    :global(.intro) {
+
+      margin-top: 35px !important;
+
+      font-size: 14px !important;
+
+      line-height: 2 !important;
+
+      color: #777;
+    }
+
+
+
+    /* ----------------------------------------
+       手机端 Categories
+       ---------------------------------------- */
+
+    :global(.categories) {
+
+      padding:
+        60px 0 100px !important;
+    }
+
+
+    :global(.category) {
+
+      grid-template-columns:
+        45px 1fr 30px;
+
+      padding: 25px 0;
+    }
+
+
+    :global(.chinese) {
+
+      font-size: 24px;
+    }
+
+
+    :global(.english) {
+
+      font-size: 11px;
+    }
+
+
+
+    /* ----------------------------------------
+       手机端 Footer
+       ---------------------------------------- */
+
     footer {
+
       padding: 25px 24px;
     }
+
   }
+
 </style>
