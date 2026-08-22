@@ -5,8 +5,16 @@ const {
 } = Astro.props;
 
 const categories = [
-  { name: "日记", english: "Diary", path: "/diary/" },
-  { name: "书籍", english: "Books", path: "/books/" },
+  {
+    name: "日记",
+    english: "Diary",
+    path: "/diary/",
+  },
+  {
+    name: "书籍",
+    english: "Books",
+    path: "/books/",
+  },
 ];
 ---
 
@@ -47,7 +55,7 @@ const categories = [
   <body>
 
     <!-- =========================
-         全网站背景图片
+         背景图片
          ========================= -->
 
     <div class="background-wrapper">
@@ -60,12 +68,12 @@ const categories = [
 
 
     <!-- =========================
-         网站主要内容
+         网站内容
          ========================= -->
 
     <div class="site-content">
 
-      <!-- 顶部导航 -->
+      <!-- 导航栏 -->
 
       <header class="header">
 
@@ -100,17 +108,23 @@ const categories = [
       </header>
 
 
-      <!-- 页面内容 -->
+      <!-- 页面主体 -->
 
       <main>
+
         <slot />
+
       </main>
 
 
-      <!-- Footer -->
+      <!-- 页脚 -->
 
       <footer>
-        <p>© 2026 yourloaive</p>
+
+        <p>
+          © 2026 yourloaive
+        </p>
+
       </footer>
 
     </div>
@@ -130,17 +144,21 @@ const categories = [
   }
 
 
-  :global(html),
-  :global(body) {
+  :global(html) {
     margin: 0;
+    padding: 0;
 
     width: 100%;
-
     min-height: 100%;
   }
 
 
   :global(body) {
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+    min-height: 100%;
 
     background: #f8f7f3;
 
@@ -158,22 +176,19 @@ const categories = [
 
 
   /* ========================================
-     全局背景
+     背景图片
      ======================================== */
 
   .background-wrapper {
 
-    position: fixed;
+    position: absolute;
 
     top: 0;
     left: 0;
 
     width: 100%;
-    height: 100vh;
 
     z-index: 0;
-
-    overflow: hidden;
 
     pointer-events: none;
   }
@@ -200,6 +215,8 @@ const categories = [
     position: relative;
 
     z-index: 1;
+
+    width: 100%;
   }
 
 
@@ -220,11 +237,6 @@ const categories = [
   }
 
 
-
-  /* ========================================
-     Logo
-     ======================================== */
-
   .logo {
 
     color: #222;
@@ -236,6 +248,18 @@ const categories = [
     font-weight: 600;
 
     letter-spacing: -0.02em;
+
+    transition:
+      opacity 0.25s ease,
+      transform 0.25s ease;
+  }
+
+
+  .logo:hover {
+
+    opacity: 0.65;
+
+    transform: translateY(-2px);
   }
 
 
@@ -330,6 +354,8 @@ const categories = [
 
   main {
 
+    width: 100%;
+
     max-width: 1100px;
 
     margin: 0 auto;
@@ -347,12 +373,17 @@ const categories = [
 
     padding: 30px 5vw;
 
-    border-top:
-      1px solid #d8d6d0;
+    border-top: 1px solid #d8d6d0;
 
     color: #999;
 
     font-size: 12px;
+  }
+
+
+  footer p {
+
+    margin: 0;
   }
 
 
@@ -363,41 +394,9 @@ const categories = [
 
   @media (max-width: 700px) {
 
-
-    /* ----------------------------------------
-       手机端背景
-       ---------------------------------------- */
-
-    .background-wrapper {
-
-      position: fixed;
-
-      top: 0;
-      left: 0;
-
-      width: 100%;
-      height: 100vh;
-
-      overflow: hidden;
-
-      z-index: 0;
-    }
-
-
-    .background-image {
-
-      width: 100%;
-
-      height: auto;
-
-      opacity: 0.25;
-    }
-
-
-
-    /* ----------------------------------------
-       手机端 Header
-       ---------------------------------------- */
+    /* -------------------------
+       Header
+       ------------------------- */
 
     .header {
 
@@ -411,10 +410,9 @@ const categories = [
     }
 
 
-
-    /* ----------------------------------------
-       手机端导航
-       ---------------------------------------- */
+    /* -------------------------
+       Navigation
+       ------------------------- */
 
     nav {
 
@@ -426,6 +424,12 @@ const categories = [
         repeat(2, 1fr);
 
       gap: 18px 12px;
+    }
+
+
+    nav a {
+
+      align-items: flex-start;
     }
 
 
@@ -442,94 +446,48 @@ const categories = [
 
 
 
-    /* ----------------------------------------
-       手机端 Main
-       ---------------------------------------- */
+    /* -------------------------
+       Main
+       ------------------------- */
 
     main {
+
+      width: 100%;
 
       padding: 0 24px;
     }
 
 
 
-    /* ----------------------------------------
-       手机端首页 Hero
-       ---------------------------------------- */
+    /* -------------------------
+       手机端背景图
+       ------------------------- */
 
-    :global(.hero) {
+    .background-wrapper {
 
-      min-height: 480px !important;
+      position: absolute;
 
-      padding:
-        70px 0 80px !important;
+      top: 0;
+      left: 0;
 
-      justify-content: center;
+      width: 100%;
     }
 
 
-    :global(h1) {
+    .background-image {
 
-      font-size:
-        clamp(
-          46px,
-          13vw,
-          72px
-        ) !important;
+      width: 100%;
 
-      line-height: 1 !important;
-    }
+      height: auto;
 
-
-    :global(.intro) {
-
-      margin-top: 35px !important;
-
-      font-size: 14px !important;
-
-      line-height: 2 !important;
-
-      color: #777;
+      display: block;
     }
 
 
 
-    /* ----------------------------------------
-       手机端 Categories
-       ---------------------------------------- */
-
-    :global(.categories) {
-
-      padding:
-        60px 0 100px !important;
-    }
-
-
-    :global(.category) {
-
-      grid-template-columns:
-        45px 1fr 30px;
-
-      padding: 25px 0;
-    }
-
-
-    :global(.chinese) {
-
-      font-size: 24px;
-    }
-
-
-    :global(.english) {
-
-      font-size: 11px;
-    }
-
-
-
-    /* ----------------------------------------
-       手机端 Footer
-       ---------------------------------------- */
+    /* -------------------------
+       Footer
+       ------------------------- */
 
     footer {
 
