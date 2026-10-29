@@ -29,7 +29,7 @@ const posts = allPosts
     author: post.data.author ?? "",
     tags: post.data.tags ?? [],
     body: post.body ?? "",
-    date: post.data.date.toISOString(),
+    date: post.data.date?.toISOString() ?? "",
   }));
 ---
 

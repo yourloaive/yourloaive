@@ -1,3 +1,4 @@
+
 ---
 import {
   getCollection,
@@ -5,7 +6,7 @@ import {
 } from "astro:content";
 
 interface Props {
-  category: "diary" |  "books" ;
+  category: "diary" | "books";
 }
 
 const { category } = Astro.props;
@@ -17,7 +18,9 @@ const posts: Post[] = (await getCollection("posts"))
     return post.data.category === category && !post.data.draft;
   })
   .sort((a: Post, b: Post) => {
-    return b.data.date.valueOf() - a.data.date.valueOf();
+    const dateA = a.data.date?.getTime() ?? 0;
+    const dateB = b.data.date?.getTime() ?? 0;
+    return dateB - dateA;
   });
 ---
 
@@ -26,13 +29,15 @@ const posts: Post[] = (await getCollection("posts"))
     <div class="post-list">
       {posts.map((post: Post) => (
         <a class="post-item" href={`/${post.id}/`}>
-          <div class="post-date">
-            {post.data.date.toLocaleDateString("zh-CN", {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
-            })}
-          </div>
+          {post.data.date && (
+            <div class="post-date">
+              {post.data.date.toLocaleDateString("zh-CN", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+              })}
+            </div>
+          )}
 
           <div class="post-info">
             <h2>{post.data.title}</h2>
@@ -65,14 +70,10 @@ const posts: Post[] = (await getCollection("posts"))
     grid-template-columns: 120px 1fr 30px;
     gap: 30px;
     align-items: center;
-
     padding: 28px 0;
-
     border-bottom: 1px solid #d8d6d0;
-
     color: #222;
     text-decoration: none;
-
     transition:
       padding 0.25s ease,
       color 0.25s ease;
@@ -85,7 +86,6 @@ const posts: Post[] = (await getCollection("posts"))
 
   .post-date {
     color: #999;
-
     font-family: Arial, Helvetica, sans-serif;
     font-size: 11px;
     letter-spacing: 0.05em;
@@ -93,7 +93,6 @@ const posts: Post[] = (await getCollection("posts"))
 
   .post-info h2 {
     margin: 0;
-
     font-size: 20px;
     font-weight: 400;
     line-height: 1.5;
@@ -102,7 +101,6 @@ const posts: Post[] = (await getCollection("posts"))
   .post-info p {
     max-width: 600px;
     margin: 8px 0 0;
-
     color: #999;
     font-size: 13px;
     line-height: 1.8;
@@ -111,7 +109,6 @@ const posts: Post[] = (await getCollection("posts"))
   .arrow {
     color: #999;
     font-size: 18px;
-
     transition: transform 0.25s ease;
   }
 
@@ -121,7 +118,6 @@ const posts: Post[] = (await getCollection("posts"))
 
   .empty {
     padding: 40px 0;
-
     color: #999;
     font-size: 13px;
   }
